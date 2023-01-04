@@ -8,7 +8,7 @@ import { composeValidators, required } from '../../utils/validators/validators'
 import { Input } from '../common/FormsControls/FormsControls'
 import { FORM_ERROR } from "final-form"
 
-const LoginFinalForm = ({onSubmit}) => {
+const LoginFinalForm = ({ onSubmit, captchaUrl }) => {
   return (
     <div>
       <Form
@@ -24,6 +24,14 @@ const LoginFinalForm = ({onSubmit}) => {
             <div>
               <Field type={'checkbox'} name={"rememberMe"} component={Input} /> remember me
             </div>
+
+            {captchaUrl && <img src={captchaUrl} />}
+            {captchaUrl &&
+              <div>
+                <Field placeholder={'Symbols from image'} name={"captcha"} component={Input} validate={composeValidators(required)} />
+              </div>
+            }
+
             <div>
               <button type="submit">Login</button>
             </div>
@@ -39,7 +47,7 @@ const Login = (props) => {
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms)) //это из final form документации
 
   const onSubmit = async formData => {
-    props.login(formData.email, formData.password, formData.rememberMe)
+    props.login(formData.email, formData.password, formData.rememberMe, formData.captcha)
     await sleep(300)
     if (!props.isAuth) {
       return { [FORM_ERROR]: 'Login Failed' }
@@ -53,12 +61,13 @@ const Login = (props) => {
   return (
     <div>
       <h1>Login</h1>
-      <LoginFinalForm onSubmit={onSubmit} />
+      <LoginFinalForm onSubmit={onSubmit} captchaUrl={props.captchaUrl} />
     </div>
   )
 }
 
 const mapStateToProps = (state) => ({
+  captchaUrl: state.auth.captchaUrl,
   isAuth: state.auth.isAuth
 })
 

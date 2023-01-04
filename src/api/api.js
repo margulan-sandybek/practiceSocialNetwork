@@ -65,12 +65,19 @@ export const profileAPI = {
         return (
             instance.put(
                 `profile/photo`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
         )
-    }
+    },
+    saveProfile(profile) {
+        return (
+            instance.put(
+                `profile`, profile
+            )
+        )
+    },
 }
 
 export const authAPI = {
@@ -81,10 +88,10 @@ export const authAPI = {
             )
         )
     },
-    login(email, password, rememberMe = false) {
+    login(email, password, rememberMe = false, captcha = null) {
         return (
             instance.post(
-                `auth/login`, { email, password, rememberMe }
+                `auth/login`, { email, password, rememberMe, captcha }
             )
         )
     },
@@ -96,3 +103,15 @@ export const authAPI = {
         )
     }
 }
+
+export const securityAPI = {
+    getCaptchaUrl() {
+        return (
+            instance.get(
+                `security/get-captcha-url`
+            )
+        )
+    },
+}
+
+
